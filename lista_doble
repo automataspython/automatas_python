@@ -1,0 +1,183 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+struct node     //estructura
+{
+	char info[30];
+   int linea;
+   int token;
+	struct node *ant;
+	struct node *sig;
+};
+typedef struct node nodo;
+typedef nodo *tipolista;
+
+typedef struct _token_id
+{
+	char lex[30];
+	int id;
+}token_id;
+
+token_id atoken[] = {
+////////// OPERADORES
+       {"+",1},
+       {"-",2},
+       {"*",3},
+       {"**",4},
+       {"/",5},
+       {"//",6},
+       {"%",7},
+       {"<<",8},
+       {">>",9},
+       {"&",10},
+       {"|",11},
+       {"^",12},
+       {"~",13},
+       {"<",14},
+       {">",15},
+       {"<=",16},
+       {">=",17},
+       {"==",18},
+       {"!=",19},
+       {"<>",20},
+       //////////// DELIMITANTES
+       {"(",21},
+       {")",22},
+       {"[",23},
+       {"]",24},
+       {"{",25},
+       {"}",26},
+       {"@",27},
+       {",",28},
+       {":",29},
+       {".",30},
+       {"`",31},
+       {"=",32},
+       {";",33},
+       {"+=",34},
+       {"-=",35},
+       {"*=",36},
+       {"/=",37},
+       {"//=",38},
+       {"%=",39},
+       {"&=",40},
+       {"|=",41},
+       {"^=",42},
+       {">>=",43},
+       {"<<=",44},
+      //  {"**",45},
+       {"'",46},
+       {"\"",47}, // caracter "
+       {"#",48},
+      // {"\\",49},
+       {"$",50},
+       {"?",51},
+       {"print",52},
+       {"False",53},
+       {"None",54},
+       {"True",55},
+       {"and",56},
+       {"as",57},
+       {"assert",58},
+       {"break",59},
+       {"class",60},
+       {"continue",61},
+       {"def",62},
+       {"del",63},
+       {"elif",64},
+       {"else",65},
+       {"except",66},
+       {"finally",67},
+       {"for",68},
+       {"from",69},
+       {"global",70},
+       {"if",71},
+       {"import",72},
+       {"in",73},
+       {"is",74},
+       {"lambda",75},
+       {"nonlocal",76},
+       {"not",77},
+       {"or",78},
+       {"pass",79},
+       {"raise",80},
+       {"return",81},
+       {"try",82},
+       {"while",83},
+       {"with",84},
+       {"yield",85}
+};
+
+void insertar(tipolista *lista,char x[],int l,int t) //insertar en lista
+{
+	tipolista n,p=*lista;
+	n=(nodo*)malloc(sizeof(nodo));
+   strcpy(n->info,x);
+   n->linea=l;
+   n->token=t;
+	n->ant=NULL;
+	n->sig=NULL;
+	if(*lista==NULL)
+		*lista=n;
+	else
+	{
+		while(p->sig!=NULL)
+			p=p->sig;
+		p->sig=n;
+		n->ant=p;
+	}}
+
+void imprimir(tipolista p)//imprimir lista
+{
+   while(p!=NULL)
+   {
+      printf("[ %s %d %d ] \n",p->info,p->linea,p->token);
+
+      p=p->sig;
+   }}
+
+int busca_token(char pal[]) {
+	int i;
+	for ( i= 0; i <= 83; i++)
+	{
+		if(strcmp(atoken[i].lex, pal) == 0)
+			return atoken[i].id;
+	}
+	return 0;
+}
+
+int main()
+{
+tipolista lista=NULL; //inicio lista
+FILE* miarchivo=NULL;  //archivo
+char fila;
+char cadena[50];
+int u=0,linea=1;
+miarchivo=fopen("archivod.txt","r");
+int tokeni;
+while(feof(miarchivo)==0){ ////INICIO DEL WHILE
+	fila=fgetc(miarchivo);
+   cadena[u]=fila;
+	u++;
+
+if((fila==' ')||(fila=='\n')||(fila=='<')||(fila=='>')||(fila=='"'))
+{
+
+cadena[u]=NULL;
+fflush(stdin);
+
+tokeni=busca_token(cadena);
+//printf("%s",tokeni);
+insertar(&lista,cadena,linea,tokeni);
+
+if(fila=='\n')
+linea=linea+1;
+u=0;}
+
+}
+ fclose(miarchivo);
+	imprimir(lista);
+	system("pause");
+	return (0);
+}
