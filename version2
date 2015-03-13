@@ -1,0 +1,266 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+struct node     //estructura
+{
+  char info[50];
+  int linea;
+  int token;
+  struct node *ant;
+  struct node *sig;
+};
+typedef struct node nodo;
+typedef nodo *tipolista;
+tipolista lista=NULL;
+
+typedef struct _token_id
+{
+  char lex[30];
+  int id;
+}token_id;
+
+
+token_id atoken[] = {
+////////// OPERADORES
+       {"+",1},
+       {"-",2},
+       {"*",3},
+       {"**",4},
+       {"/",5},
+       {"//",6},
+       {"%",7},
+       {"<<",8},
+       {">>",9},
+       {"&",10},
+       {"|",11},
+       {"^",12},
+       {"~",13},
+       {"<",14},
+       {">",15},
+       {"<=",16},
+       {">=",17},
+       {"==",18},
+       {"!=",19},
+       {"<>",20},
+       //////////// DELIMITANTES
+       {"(",21},
+       {")",22},
+       {"[",23},
+       {"]",24},
+       {"{",25},
+       {"}",26},
+       {"@",27},
+       {",",28},
+       {":",29},
+       {".",30},
+       {"`",31},
+       {"=",32},
+       {";",33},
+       {"+=",34},
+       {"-=",35},
+       {"*=",36},
+       {"/=",37},
+       {"//=",38},
+       {"%=",39},
+       {"&=",40},
+       {"|=",41},
+       {"^=",42},
+       {">>=",43},
+       {"<<=",44},
+      //  {"**",45},
+       {"'",46},
+       {"\"",47}, // caracter "
+       {"#",48},
+      // {"\\",49},
+       {"$",50},
+       {"?",51},
+       {"print",52},
+       {"False",53},
+       {"None",54},
+       {"True",55},
+       {"and",56},
+       {"as",57},
+       {"assert",58},
+       {"break",59},
+       {"class",60},
+       {"continue",61},
+       {"def",62},
+       {"del",63},
+       {"elif",64},
+       {"else",65},
+       {"except",66},
+       {"finally",67},
+       {"for",68},
+       {"from",69},
+       {"global",70},
+       {"if",71},
+       {"import",72},
+       {"in",73},
+       {"is",74},
+       {"lambda",75},
+       {"nonlocal",76},
+       {"not",77},
+       {"or",78},
+       {"pass",79},
+       {"raise",80},
+       {"return",81},
+       {"try",82},
+       {"while",83},
+       {"with",84},
+       {"yield",85},
+       {"0",86},
+       {"1",86},
+       {"3",86},
+       {"4",86},
+       {"5",86},
+       {"6",86},
+       {"7",86},
+       {"8",86},
+       {"9",86},
+       {"10",86},
+	   {'\n',87},
+	   {" ",89}
+};
+
+
+
+int b_token(char *pal) {
+  int i; 
+  for ( i= 0; i <= 94; i++)
+  {
+    if(strcmp(atoken[i].lex, pal)==0)
+      return atoken[i].id ;
+    else{
+    	
+	}
+  }
+  return 0;
+}
+
+int parea(int ntoke){
+	if(lista->sig!=NULL){
+	
+	if (ntoke==lista->token){
+		lista=lista->sig;
+		return 1;
+	}
+	else {
+		printf("es parte esencial ",lista->linea);
+		if(lista->token!=86)
+			printf("----- token= %d ",lista->token);
+	}
+}}
+
+void nuevo(char *pal,int lin,int token) {
+	tipolista nuevo, p = lista; 
+	nuevo = (nodo *) malloc(sizeof(nodo));
+	strcpy(nuevo->info, pal);
+	nuevo->	linea=lin;
+	nuevo->token=token;
+	nuevo->sig = NULL;
+	nuevo->ant = NULL;
+	if (lista == NULL)
+	{
+		nuevo->ant = NULL;
+		lista = nuevo;
+	}
+	else {
+		while(p->sig!=NULL) {	
+			p = p->sig;}
+		p->sig = nuevo;	
+		}}
+void imprimir() {
+	tipolista p=lista;
+	while(p) {
+		printf("[%s %d %d]\n  ",(p)->info,(p)->linea,(p)->token);
+		p = (p)->sig;
+	}
+
+}
+void comprueva(){
+int a=0;
+	while(lista->sig!=NULL){
+		switch(lista->token){	
+		case 0:
+		
+			a=parea(0);
+			a=parea(32);
+			a=parea(86);
+			break;	
+		case 52:
+			a=parea(52);
+			a=parea(47);
+			a=parea(0);
+			a=parea(47);
+			break;
+		
+	}}
+	
+}
+
+
+
+
+int main (void){
+	FILE* archivo=NULL;
+	archivo=fopen("hola.txt","r");
+	char c;
+	int linea=1,i=0,token;
+	char renglon[50];
+	c = fgetc(archivo);
+	do {
+		if(c == EOF)
+			break;
+		if(c == '\n') {
+			renglon[i]=c;
+			renglon[i]=NULL;
+			nuevo(renglon,linea,87);
+			linea++;
+			i=0;
+		}
+		if(isspace(c)){
+		    c = fgetc(archivo);}
+		while(isalnum(c))
+		{
+		    renglon[i] = c;
+		    i++;
+		    c = fgetc(archivo);}
+			 if(i != 0) {
+	    		renglon[i]=NULL;
+	    		token=b_token(renglon);//pruevas
+	    		
+	    		nuevo(renglon,linea,token);
+	    		i = 0;
+	    	}
+	    	while(isdigit(c)) {
+	    		renglon[i] = c;
+	    		i++;
+	    		c = fgetc(archivo);}
+	    	// almenos un caracter entro al arreglo
+    		if(i != 0) {
+    			renglon[i]=NULL;
+	    		token=b_token(renglon);//pruevas
+	    		
+	    		nuevo(renglon,linea,token);
+	    		i = 0;	}
+		if(!isspace(c) && c != EOF){
+		    renglon[i] = c;
+			i++;
+			c = fgetc(archivo);}
+			if(i != 0) {
+		    renglon[i]=NULL;
+		    	token=b_token(renglon);//pruevas
+	    		nuevo(renglon,linea,token);
+		    	i = 0;
+		    	
+		    	}
+	}while(!feof(archivo));
+
+imprimir();
+
+comprueva();
+
+return 0;
+}
